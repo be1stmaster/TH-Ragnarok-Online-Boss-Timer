@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ตารางคำนวนเวลาเกิดบอสจากเกม Ragnarok Online</title>
+    <!-- ico / favicon-->
+    <link type="image/x-icon" href="poring.ico" rel="shortcut icon" />
+    <!-- อ้างอิง -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- ฟ้อนท์ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+
+    <audio id="bossSpawnSound" src="sounds/New Respawned.mp3" preload="auto"></audio>
+
+    <style>
+
+        body {
+            background-color: black;
+            color: white;
+    
+            font-family: "Chakra Petch", sans-serif;
+            font-weight: bolder;
+            font-style: normal;
+            font-size: 15px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th {
+            border: 1px solid white;
+            padding: 10px 10px 10px 10px;
+            text-align: center;
+        }
+        td {
+            border: 1px solid white;
+            padding: 10px 10px 10px 10px;
+            text-align: center;
+            height: 30px;
+            line-height: 2.5;
+        }
+        td.bg-color {background-color: #373c52;}
+
+        th {
+            background-color: #303B78;
+        }
+        .field {
+            clear: both;
+            margin-bottom: 10px
+        }
+        .input_bossname {
+            height: auto;
+            padding: 10px;
+            font-size: 12px;
+            font-weight: bolder;
+            text-align: center;
+            width: 120px;
+            border-radius: 25px;
+            border: white;
+        }
+        .input_id {
+            height: auto;
+            padding: 5px 5px 5px 5px;
+            font-size: 12px;
+            text-align: center;
+            width: 35px;
+            border-radius: 25px;
+            border: white;
+        }
+        .input_map {
+            height: auto;
+            padding: 5px 5px 5px 5px;
+            font-size: 12px;
+            text-align: center;
+            width: 100px;
+            border-radius: 25px;
+            border: white;
+        }
+/*        
+        input[type=button] {
+            padding: 11px 20px 7px 20px;
+            border: 1px solid #7F8DBF;
+            border-radius: 50px;
+            color: black;
+
+            transition: all 0.1s;
+            -webkit-transition: all 0.1s;
+
+            background-color: #3498DB;
+            border-bottom: 5px solid #2980B9;
+            text-shadow: 0px -2px #2980B9;
+        }
+        input[type=button]:active {
+            transform: translate(0px,5px);
+            -webkit-transform: translate(0px,5px);
+            border-bottom: 1px solid;
+            background-color: Black;
+        }
+*/
+
+        input[type=button] {
+            border: 1px solid #7F8DBF;
+            background: #7F8DBF;
+            padding: 9px 20px 9px 20px;
+            color: black;
+            border-radius: 2em;
+        }
+
+        input[type=button]:hover {
+            cursor: pointer;
+            background: black;
+            color: #fff;
+        }
+        input[type=button]:active {
+            background: red;
+            color: #fff;
+            /* transition: background 2s, color 2s;  เพิ่มการเปลี่ยนสี */
+        }
+        input[type="radio"] {
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            border-radius: 50%;
+            background: White;
+            border: 3px solid #FFF;
+            outline: 1px solid #999;
+            height: 25px;
+            width: 25px;
+        }
+
+        input[type="radio"]:checked {
+            background: #303B78;
+        }
+        
+
+        input[type=number] {
+            width: 50px;
+            padding: 10px 10px 10px 10px;
+            border: .2em solid #7F8DBF;
+            border-radius: 1em;
+            text-align: center;
+            color: #7F8DBF;
+            appearance: textfield;
+            margin: 0;
+            &::-webkit-inner-spin-button {
+                opacity: 1;
+                background: red;
+            }
+        }
+        input[type=time] {
+            border: .2em solid #7F8DBF;
+            padding: 10px 10px 10px 10px;
+            border-radius: 2em;
+            color: #7F8DBF;
+            }
+
+            @media (max-width: 1350px) {
+        .character-image {
+            opacity: 0.3; /* ทำให้ภาพตัวละครจางลง */
+            z-index: -1;
+        }
+    }
+
+
+    @media (max-width: 1024px) {
+        body {
+            font-size: 14px; /* ลดขนาดฟอนต์สำหรับหน้าจอที่เล็กลง */
+        }
+        table {
+            font-size: 12px; /* ลดขนาดฟอนต์ในตาราง */
+        }
+    }
+
+    @media (max-width: 320px) {
+        .input_bossname, .input_id, .input_map {
+            width: 80%; /* ปรับขนาดช่องกรอกข้อมูลให้พอดีกับหน้าจอ */
+        }
+    }
+    </style>
+</head>
+<div>
+    <div style="position: absolute; right: 0; top: 0; text-align: right; margin: 20px 20px 0px 0px;"><span style="background-color: #555; padding: 10px; line-height: 2.5; font-size: 14px; z-index: 2;"><strong>คำเตือน:</strong> เพื่อให้เว็บไซต์แสดงผลได้อย่างถูกต้อง แนะนำให้ใช้เบราว์เซอร์ที่มีความกว้างอย่างน้อย 1024 พิกเซล สำหรับอุปกรณ์เดสก์ท็อป และ 320 พิกเซล สำหรับอุปกรณ์มือถือ</span>
+    </div>
+
+    <div style="display: flex; justify-content: flex-end; text-align: center; position: relative;">
+        <div style="position: absolute; right: 0; top: 0; text-align: center;">
+            <h1 style="display: flex; align-items: center; margin: 120px 20px 0px 0px;">
+                ตารางคำนวนเวลาเกิดบอสจากเกม
+                <img src="https://seeklogo.com/images/R/ragnarok-online-logo-BC2609E18A-seeklogo.com.png" alt="Ragnarok Logo" style="height: 100px; margin-left: 10px;">
+            </h1>
+        </div>
+        <div style="position: absolute; left: 0; top: 0; margin-left: 10px;">
+            <img src="images/characters.png" alt="" style="height: 200px; z-index: 1;"  class="character-image">
+        </div>
+    </div>
+    <h2 style="margin-left: 20px; margin-top: 220px;">บอสใน Field ที่สามารถ Memo Warp ได้</h2>
+    
+    <table id="boss_table" style="margin-top: 0px;">
+        <tr>
+            <th>ภาพ<br>Image</th>
+            <th>ชื่อบอส<br>Boss Name</th>
+            <th>รหัสมอนสเตอร์<br>Monster ID</th>
+            <th>แผนที่<br>Map</th>
+            <th>รายละเอียดเพิ่มเติม<br>More Details</th>
+            <th>ระยะเวลารอการเกิดใหม่ (นาที)<br>Spawn Time (Minutes)</th>
+            <th>Focusing<br>Marker</th>
+            <th>เวลาที่บอสตาย (ชช:นน)<br>Death Time (HH:mm)</th>
+            <th>เวลาเกิดครั้งต่อไป<br>Next Spawn Time</th>
+            <th>เวลาที่เหลืออยู่<br>Remaining Time</th>
+        </tr>
+        <tr>
+            <td class="bg-color" rowspan="5"><img src="https://file5s.ratemyserver.net/mobs/1785.gif" alt="Atroce"></td>
+            <td><input type="text" id="boss_1" name="boss_1" value="Atroce" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1785" class="input_id"></td>
+            <td><input type="text" id="map_1" name="map_1" value="ra_fild02" class="input_map"><br>📍 Rachel Field 2</td>
+            <td rowspan="5"><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1785&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_1" name="spawn_time_min_1" min="1" max="10080" value="240"> - <input type="number" id="spawn_time_max_1" name="spawn_time_max_1" min="1" max="10080" value="250"></td>
+            <td><input type="radio" name="radio-group" value="option1"></td>
+            <td><input type="time" id="death_time_1" name="death_time_1">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_1')">
+            </td>
+            <td id="next_spawn_time_1"></td>
+            <td id="remaining_time_1"></td>
+        </tr>
+        <tr>
+            <td><input type="text" id="boss_2" name="boss_2" value="Atroce" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1785" class="input_id"></td>
+            <td><input type="text" id="map_2" name="map_2" value="ra_fild03" class="input_map"><br>📍 Rachel Field 3</td>
+            <td><input type="number" id="spawn_time_min_2" name="spawn_time_min_2" min="1" max="10080" value="180"> - <input type="number" id="spawn_time_max_2" name="spawn_time_max_2" min="1" max="10080" value="190"></td>
+            <td><input type="radio" name="radio-group" value="option2"></td>
+            <td><input type="time" id="death_time_2" name="death_time_2">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_2')">
+            </td>
+            <td id="next_spawn_time_2"></td>
+            <td id="remaining_time_2"></td>
+        </tr>
+        <tr>
+            <td><input type="text" id="boss_3" name="boss_3" value="Atroce" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1785" class="input_id"></td>
+            <td><input type="text" id="map_3" name="map_3" value="ra_fild04" class="input_map"><br>📍 Rachel Field 4</td>
+            <td><input type="number" id="spawn_time_min_3" name="spawn_time_min_3" min="1" max="10080" value="300"> - <input type="number" id="spawn_time_max_3" name="spawn_time_max_3" min="1" max="10080" value="310"></td>
+            <td><input type="radio" name="radio-group" value="option3"></td>
+            <td><input type="time" id="death_time_3" name="death_time_3">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_3')">
+            <td id="next_spawn_time_3"></td>
+            <td id="remaining_time_3"></td>
+        </tr>
+        <tr>
+            <td><input type="text" id="boss_4" name="boss_4" value="Atroce" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1785" class="input_id"></td>
+            <td><input type="text" id="map_4" name="map_4" value="ve_fild01" class="input_map"><br>📍 Vein Field 1</td>
+            <td><input type="number" id="spawn_time_min_4" name="spawn_time_min_4" min="1" max="10080" value="180"> - <input type="number" id="spawn_time_max_4" name="spawn_time_max_4" min="1" max="10080" value="190"></td>
+            <td><input type="radio" name="radio-group" value="option4"></td>
+            <td><input type="time" id="death_time_4" name="death_time_4">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_4')">
+            <td id="next_spawn_time_4"></td>
+            <td id="remaining_time_4"></td>
+        </tr>
+        <tr>
+            <td><input type="text" id="boss_5" name="boss_5" value="Atroce" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1785" class="input_id"></td>
+            <td><input type="text" id="map_5" name="map_5" value="ve_fild02" class="input_map"><br>📍 Vein Field 2</td>
+            <td><input type="number" id="spawn_time_min_5" name="spawn_time_min_5" min="1" max="10080" value="360"> - <input type="number" id="spawn_time_max_5" name="spawn_time_max_5" min="1" max="10080" value="370"></td>
+            <td><input type="radio" name="radio-group" value="option5"></td>
+            <td><input type="time" id="death_time_5" name="death_time_5">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_5')">
+            <td id="next_spawn_time_5"></td>
+            <td id="remaining_time_5"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1115.gif" alt="Eddga"></td>
+            <td><input type="text" id="boss_6" name="boss_6" value="Eddga" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1115" class="input_id"></td>
+            <td><input type="text" id="map_6" name="map_6" value="pay_fild11" class="input_map"><br>📍 Payon Field 11</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1115&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_6" name="spawn_time_min_6" min="1" max="10080" value="120"> - <input type="number" id="spawn_time_max_6" name="spawn_time_max_6" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option6"></td>
+            <td><input type="time" id="death_time_6" name="death_time_6">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_6')">
+            <td id="next_spawn_time_6"></td>
+            <td id="remaining_time_6"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1252.gif" alt="Garm"></td>
+            <td><input type="text" id="boss_7" name="boss_7" value="Garm" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1252" class="input_id"></td>
+            <td><input type="text" id="map_7" name="map_7" value="xmas_fild01" class="input_map"><br>📍 Lutie Field 1</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1252&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_7" name="spawn_time_min_7" min="1" max="10080" value="120"> - <input type="number" id="spawn_time_max_7" name="spawn_time_max_7" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option7"></td>
+            <td><input type="time" id="death_time_7" name="death_time_7">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_7')">
+            <td id="next_spawn_time_7"></td>
+            <td id="remaining_time_7"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1059.gif" alt="Mistress"></td>
+            <td><input type="text" id="boss_8" name="boss_8" value="Mistress" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1059" class="input_id"></td>
+            <td><input type="text" id="map_8" name="map_8" value="mjolnir_04" class="input_map"><br>📍 Mt.Mjolnir Field 4</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1059&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_8" name="spawn_time_min_8" min="1" max="10080" value="120"> - <input type="number" id="spawn_time_max_8" name="spawn_time_max_8" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option8"></td>
+            <td><input type="time" id="death_time_8" name="death_time_8">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_8')">
+            <td id="next_spawn_time_8"></td>
+            <td id="remaining_time_8"></td>
+        </tr>
+        <tr>
+            <td class="bg-color" rowspan="2"><img src="https://file5s.ratemyserver.net/mobs/1087.gif" alt="Orc Hero"></td>
+            <td><input type="text" id="boss_9" name="boss_9" value="Orc Hero" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1087" class="input_id"></td>
+            <td><input type="text" id="map_9" name="map_9" value="gef_fild02" class="input_map"><br>📍 Geffen Field 2</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1087&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_9" name="spawn_time_min_9" min="1" max="10080" value="1440"> - <input type="number" id="spawn_time_max_9" name="spawn_time_max_9" min="1" max="10080" value="1450"></td>
+            <td><input type="radio" name="radio-group" value="option9"></td>
+            <td><input type="time" id="death_time_9" name="death_time_9">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_9')">
+            <td id="next_spawn_time_9"></td>
+            <td id="remaining_time_9"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><input type="text" id="boss_10" name="boss_10" value="Orc Hero" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1087" class="input_id"></td>
+            <td><input type="text" id="map_10" name="map_10" value="gef_fild14" class="input_map"><br>📍 Geffen Field 14</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1087&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_10" name="spawn_time_min_10" min="1" max="10080" value="60"> - <input type="number" id="spawn_time_max_10" name="spawn_time_max_10" min="1" max="10080" value="70"></td>
+            <td><input type="radio" name="radio-group" value="option10"></td>
+            <td><input type="time" id="death_time_10" name="death_time_10">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_10')">
+            <td id="next_spawn_time_10"></td>
+            <td id="remaining_time_10"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1190.gif" alt="Orc Lord"></td>
+            <td><input type="text" id="boss_11" name="boss_11" value="Orc Lord" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1190" class="input_id"></td>
+            <td><input type="text" id="map_11" name="map_11" value="gef_fild10" class="input_map"><br>📍 Geffen Field 10</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1190&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_11" name="spawn_time_min_11" min="1" max="10080" value="120"> - <input type="number" id="spawn_time_max_11" name="spawn_time_max_11" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option11"></td>
+            <td><input type="time" id="death_time_11" name="death_time_11">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_11')">
+            <td id="next_spawn_time_11"></td>
+            <td id="remaining_time_11"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1159.gif" alt="Phreeoni"></td>
+            <td><input type="text" id="boss_12" name="boss_12" value="Phreeoni" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1159" class="input_id"></td>
+            <td><input type="text" id="map_12" name="map_12" value="moc_fild17" class="input_map"><br>📍 Morroc Field 17</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1159&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_12" name="spawn_time_min_12" min="1" max="10080" value="120"> - <input type="number" id="spawn_time_max_12" name="spawn_time_max_12" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option12"></td>
+            <td><input type="time" id="death_time_12" name="death_time_12">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_12')">
+            <td id="next_spawn_time_12"></td>
+            <td id="remaining_time_12"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1917.gif" alt="Wounded Morroc"></td>
+            <td><input type="text" id="boss_13" name="boss_13" value="Wounded Morroc" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1917" class="input_id"></td>
+            <td><input type="text" id="map_13" name="map_13" value="moc_fild22" class="input_map"><br>📍 Morroc Field 22</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1917&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_13" name="spawn_time_min_13" min="1" max="10080" value="720"> - <input type="number" id="spawn_time_max_13" name="spawn_time_max_13" min="1" max="10080" value="780"></td>
+            <td><input type="radio" name="radio-group" value="option13"></td>
+            <td><input type="time" id="death_time_13" name="death_time_13">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_13')">
+            <td id="next_spawn_time_13"></td>
+            <td id="remaining_time_13"></td>
+        </tr>
+    </table>
+    <h2>บอสในดันเจี้ยนทั่วไป ไล่ตามระยะเวลาเกิด และตัวอักษร ตามลำดับ</h2>
+    <table id="boss_table">
+        <tr>
+            <th>ภาพ<br>Image</th>
+            <th>ชื่อบอส<br>Boss Name</th>
+            <th>รหัสมอนสเตอร์<br>Monster ID</th>
+            <th>แผนที่<br>Map</th>
+            <th>รายละเอียดเพิ่มเติม<br>More Details</th>
+            <th>ระยะเวลารอการเกิดใหม่ (นาที)<br>Spawn Time (Minutes)</th>
+            <th>Focusing<br>Marker</th>
+            <th>เวลาที่บอสตาย (ชช:นน)<br>Death Time (HH:mm)</th>
+            <th>เวลาเกิดครั้งต่อไป<br>Next Spawn Time</th>
+            <th>เวลาที่เหลืออยู่<br>Remaining Time</th>
+        </tr>
+        <tr>
+            <td colspan="10" style="background-color: #444;">
+                <span style="font-size: 40px;">6 0     -     7 0     น า ที</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1511.gif" alt="Amon Ra"></td>
+            <td><input type="text" id="boss_14" name="boss_14" value="Amon Ra" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1917" class="input_id"></td>
+            <td><input type="text" id="map_14" name="map_14" value="moc_pryd06" class="input_map"><br>Dungeon 📍 Inside Pyramid B2</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1511&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_14" name="spawn_time_min_14" min="1" max="10080" value="60"> - <input type="number" id="spawn_time_max_14" name="spawn_time_max_14" min="1" max="10080" value="70"></td>
+            <td><input type="radio" name="radio-group" value="option14"></td>
+            <td><input type="time" id="death_time_14" name="death_time_14">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_14')">
+            <td id="next_spawn_time_14"></td>
+            <td id="remaining_time_14"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1272.gif" alt="Dark Lord"></td>
+            <td><input type="text" id="boss_15" name="boss_15" value="Dark Lord" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1272" class="input_id"></td>
+            <td><input type="text" id="map_15" name="map_15" value="gl_chyard" class="input_map"><br>Dungeon 📍 Glast Heim Churchyard</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1272&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_15" name="spawn_time_min_15" min="1" max="10080" value="60"> - <input type="number" id="spawn_time_max_15" name="spawn_time_max_15" min="1" max="10080" value="70"></td>
+            <td><input type="radio" name="radio-group" value="option15"></td>
+            <td><input type="time" id="death_time_15" name="death_time_15">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_15')">
+            <td id="next_spawn_time_15"></td>
+            <td id="remaining_time_15"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1389.gif" alt="Dracula"></td>
+            <td><input type="text" id="boss_16" name="boss_16" value="Dracula" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1389" class="input_id"></td>
+            <td><input type="text" id="map_16" name="map_16" value="gef_dun01 " class="input_map"><br>Dungeon 📍 Geffen Dungeon F2</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1389&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_16" name="spawn_time_min_16" min="1" max="10080" value="60"> - <input type="number" id="spawn_time_max_16" name="spawn_time_max_16" min="1" max="10080" value="70"></td>
+            <td><input type="radio" name="radio-group" value="option16"></td>
+            <td><input type="time" id="death_time_16" name="death_time_16">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_16')">
+            <td id="next_spawn_time_16"></td>
+            <td id="remaining_time_16"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1086.gif" alt="Golden Thief Bug"></td>
+            <td><input type="text" id="boss_17" name="boss_17" value="Golden Thief Bug" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1086" class="input_id"></td>
+            <td><input type="text" id="map_17" name="map_17" value="prt_sewb4" class="input_map"><br>Dungeon 📍 Prontera Culvert F4</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1086&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_17" name="spawn_time_min_17" min="1" max="10080" value="60"> - <input type="number" id="spawn_time_max_17" name="spawn_time_max_17" min="1" max="10080" value="70"></td>
+            <td><input type="radio" name="radio-group" value="option17"></td>
+            <td><input type="time" id="death_time_17" name="death_time_17">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_17')">
+            <td id="next_spawn_time_17"></td>
+            <td id="remaining_time_17"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1251.gif" alt="Stormy Knight"></td>
+            <td><input type="text" id="boss_18" name="boss_18" value="Stormy Knight" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1251" class="input_id"></td>
+            <td><input type="text" id="map_18" name="map_18" value="xmas_dun02" class="input_map"><br>Dungeon 📍 Toy Monitoring Room</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1251&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_18" name="spawn_time_min_18" min="1" max="10080" value="60"> - <input type="number" id="spawn_time_max_18" name="spawn_time_max_18" min="1" max="10080" value="70"></td>
+            <td><input type="radio" name="radio-group" value="option18"></td>
+            <td><input type="time" id="death_time_18" name="death_time_18">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_18')">
+            <td id="next_spawn_time_18"></td>
+            <td id="remaining_time_18"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1150.gif" alt="Moonlight Flower"></td>
+            <td><input type="text" id="boss_19" name="boss_19" value="Moonlight Flower" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1150" class="input_id"></td>
+            <td><input type="text" id="map_19" name="map_19" value="pay_dun04" class="input_map"><br>Dungeon 📍 Payon Cave F5</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1150&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_19" name="spawn_time_min_19" min="1" max="10080" value="60"> - <input type="number" id="spawn_time_max_19" name="spawn_time_max_19" min="1" max="10080" value="70"></td>
+            <td><input type="radio" name="radio-group" value="option19"></td>
+            <td><input type="time" id="death_time_19" name="death_time_19">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_19')">
+            <td id="next_spawn_time_19"></td>
+            <td id="remaining_time_19"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1038.gif" alt="Osiris"></td>
+            <td><input type="text" id="boss_20" name="boss_20" value="Osiris" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1038" class="input_id"></td>
+            <td><input type="text" id="map_20" name="map_20" value="moc_pryd04" class="input_map"><br>Dungeon 📍 Inside Pyramid F4</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1038&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_20" name="spawn_time_min_20" min="1" max="10080" value="60"> - <input type="number" id="spawn_time_max_20" name="spawn_time_max_20" min="1" max="10080" value="70"></td>
+            <td><input type="radio" name="radio-group" value="option20"></td>
+            <td><input type="time" id="death_time_20" name="death_time_20">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_20')">
+            <td id="next_spawn_time_20"></td>
+            <td id="remaining_time_20"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1157.gif" alt="Pharaoh"></td>
+            <td><input type="text" id="boss_21" name="boss_21" value="Pharaoh" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1157" class="input_id"></td>
+            <td><input type="text" id="map_21" name="map_21" value="in_sphinx5" class="input_map"><br>Dungeon 📍 Sphinx F5</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1157&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_21" name="spawn_time_min_21" min="1" max="10080" value="60"> - <input type="number" id="spawn_time_max_21" name="spawn_time_max_21" min="1" max="10080" value="70"></td>
+            <td><input type="radio" name="radio-group" value="option21"></td>
+            <td><input type="time" id="death_time_21" name="death_time_21">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_21')">
+            <td id="next_spawn_time_21"></td>
+            <td id="remaining_time_21"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1312.gif" alt="Turtle General"></td>
+            <td><input type="text" id="boss_22" name="boss_22" value="Turtle General" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1312" class="input_id"></td>
+            <td><input type="text" id="map_22" name="map_22" value="tur_dun04" class="input_map"><br>Dungeon 📍 Turtle Palace</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1312&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_22" name="spawn_time_min_22" min="1" max="10080" value="60"> - <input type="number" id="spawn_time_max_22" name="spawn_time_max_22" min="1" max="10080" value="70"></td>
+            <td><input type="radio" name="radio-group" value="option22"></td>
+            <td><input type="time" id="death_time_22" name="death_time_22">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_22')">
+            <td id="next_spawn_time_22"></td>
+            <td id="remaining_time_22"></td>
+        </tr>
+        <tr>
+            <td colspan="10" style="background-color: #444;">
+                <span style="font-size: 40px;">9 1     -     1 0 1     น า ที</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1492.gif" alt="Samurai Specter"></td>
+            <td><input type="text" id="boss_23" name="boss_23" value="Samurai Specter" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1492" class="input_id"></td>
+            <td><input type="text" id="map_23" name="map_23" value="ama_dun03" class="input_map"><br>Dungeon 📍 Amatsu Underground Shrine</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1492&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_23" name="spawn_time_min_23" min="1" max="10080" value="91"> - <input type="number" id="spawn_time_max_23" name="spawn_time_max_23" min="1" max="10080" value="101"></td>
+            <td><input type="radio" name="radio-group" value="option23"></td>
+            <td><input type="time" id="death_time_23" name="death_time_23">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_23')">
+            <td id="next_spawn_time_23"></td>
+            <td id="remaining_time_23"></td>
+        </tr>
+        <tr>
+            <td colspan="10" style="background-color: #444;">
+                <span style="font-size: 40px;">9 4     -     1 0 4     น า ที</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1418.gif" alt="Evil Snake Lord"></td>
+            <td><input type="text" id="boss_24" name="boss_24" value="Evil Snake Lord" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1418" class="input_id"></td>
+            <td><input type="text" id="map_24" name="map_24" value="gon_dun03" class="input_map"><br>Dungeon 📍 Arcadia</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1418&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_24" name="spawn_time_min_24" min="1" max="10080" value="94"> - <input type="number" id="spawn_time_max_24" name="spawn_time_max_24" min="1" max="10080" value="104"></td>
+            <td><input type="radio" name="radio-group" value="option24"></td>
+            <td><input type="time" id="death_time_24" name="death_time_24">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_24')">
+            <td id="next_spawn_time_24"></td>
+            <td id="remaining_time_24"></td>
+        </tr>
+        <tr>
+            <td colspan="10" style="background-color: #444;">
+                <span style="font-size: 40px;">1 1 7     -     1 2 7     น า ที</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1630.gif" alt="White Lady"></td>
+            <td><input type="text" id="boss_25" name="boss_25" value="White Lady" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1630" class="input_id"></td>
+            <td><input type="text" id="map_25" name="map_25" value="lou_dun03" class="input_map"><br>Dungeon 📍 Suei Long Gon</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1630&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_25" name="spawn_time_min_25" min="1" max="10080" value="117"> - <input type="number" id="spawn_time_max_25" name="spawn_time_max_25" min="1" max="10080" value="127"></td>
+            <td><input type="radio" name="radio-group" value="option25"></td>
+            <td><input type="time" id="death_time_25" name="death_time_25">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_25')">
+            <td id="next_spawn_time_25"></td>
+            <td id="remaining_time_25"></td>
+        </tr>
+        <tr>
+            <td colspan="10" style="background-color: #444;">
+                <span style="font-size: 40px;">1 2 0 น า ที</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/2165.gif" alt="Gold Queen Scaraba"></td>
+            <td><input type="text" id="boss_26" name="boss_26" value="Gold Queen Scaraba" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="2165" class="input_id"></td>
+            <td><input type="text" id="map_26" name="map_26" value="dic_dun03" class="input_map"><br>Dungeon 📍 Skarava hall</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=2165&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_26" name="spawn_time_min_26" min="1" max="10080" value="120"> - <input type="number" id="spawn_time_max_26" name="spawn_time_max_26" min="1" max="10080" value="120"></td>
+            <td><input type="radio" name="radio-group" value="option26"></td>
+            <td><input type="time" id="death_time_26" name="death_time_26">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_26')">
+            <td id="next_spawn_time_26"></td>
+            <td id="remaining_time_26"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/2156.gif" alt="Leak"></td>
+            <td><input type="text" id="boss_27" name="boss_27" value="Leak" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="2156" class="input_id"></td>
+            <td><input type="text" id="map_27" name="map_27" value="dew_dun01" class="input_map"><br>Dungeon 📍 Dewata Dungeon 01, Volcanic Island of Krakatoa</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=2156&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_27" name="spawn_time_min_27" min="1" max="10080" value="120"> - <input type="number" id="spawn_time_max_27" name="spawn_time_max_27" min="1" max="10080" value="120"></td>
+            <td><input type="radio" name="radio-group" value="option27"></td>
+            <td><input type="time" id="death_time_27" name="death_time_27">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_27')">
+            <td id="next_spawn_time_27"></td>
+            <td id="remaining_time_27"></td>
+        </tr>
+        <tr>
+            <td colspan="10" style="background-color: #444;">
+                <span style="font-size: 40px;">1 2 0     -     1 3 0     น า ที</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1039.gif" alt="Baphomet"></td>
+            <td><input type="text" id="boss_28" name="boss_28" value="Baphomet" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1039" class="input_id"></td>
+            <td><input type="text" id="map_28" name="map_28" value="prt_maze03" class="input_map"><br>Dungeon 📍 Labyrinth Forest F3</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1039&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_28" name="spawn_time_min_28" min="1" max="10080" value="120"> - <input type="number" id="spawn_time_max_28" name="spawn_time_max_28" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option28"></td>
+            <td><input type="time" id="death_time_28" name="death_time_28">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_28')">
+            <td id="next_spawn_time_28"></td>
+            <td id="remaining_time_28"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/2068.gif" alt="Boitata"></td>
+            <td><input type="text" id="boss_29" name="boss_29" value="Boitata" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="2068" class="input_id"></td>
+            <td><input type="text" id="map_29" name="map_29" value="bra_dun02" class="input_map"><br>Dungeon 📍 Brasilis Dungeon F2, Beyond the Waterfall</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=2068&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_29" name="spawn_time_min_29" min="1" max="10080" value="120"> - <input type="number" id="spawn_time_max_29" name="spawn_time_max_29" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option29"></td>
+            <td><input type="time" id="death_time_29" name="death_time_29">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_29')">
+            <td id="next_spawn_time_29"></td>
+            <td id="remaining_time_29"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1046.gif" alt="Doppelganger"></td>
+            <td><input type="text" id="boss_30" name="boss_30" value="Doppelganger" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1046" class="input_id"></td>
+            <td><input type="text" id="map_30" name="map_30" value="gef_dun02" class="input_map"><br>Dungeon 📍 Geffen Dungeon F3</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1046&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_30" name="spawn_time_min_30" min="1" max="10080" value="120"> - <input type="number" id="spawn_time_max_30" name="spawn_time_max_30" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option30"></td>
+            <td><input type="time" id="death_time_30" name="death_time_30">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_30')">
+            <td id="next_spawn_time_30"></td>
+            <td id="remaining_time_30"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1112.gif" alt="Drake"></td>
+            <td><input type="text" id="boss_31" name="boss_31" value="Drake" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1112" class="input_id"></td>
+            <td><input type="text" id="map_31" name="map_31" value="treasure02" class="input_map"><br>Dungeon 📍 Sunken Ship F2</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1112&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_31" name="spawn_time_min_31" min="1" max="10080" value="120"> - <input type="number" id="spawn_time_max_31" name="spawn_time_max_31" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option31"></td>
+            <td><input type="time" id="death_time_31" name="death_time_31">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_31')">
+            <td id="next_spawn_time_31"></td>
+            <td id="remaining_time_31"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1871.gif" alt="Fallen Bishop"></td>
+            <td><input type="text" id="boss_32" name="boss_32" value="Fallen Bishop" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1871" class="input_id"></td>
+            <td><input type="text" id="map_32" name="map_32" value="abbey02" class="input_map"><br>Dungeon 📍 Cursed Monastery F2</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1871&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_32" name="spawn_time_min_32" min="1" max="10080" value="120"> - <input type="number" id="spawn_time_max_32" name="spawn_time_max_32" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option32"></td>
+            <td><input type="time" id="death_time_32" name="death_time_32">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_32')">
+            <td id="next_spawn_time_32"></td>
+            <td id="remaining_time_32"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1885.gif" alt="Gopinich"></td>
+            <td><input type="text" id="boss_33" name="boss_33" value="Gopinich" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1885" class="input_id"></td>
+            <td><input type="text" id="map_33" name="map_33" value="mosk_dun03" class="input_map"><br>Dungeon 📍 Dremuci Forest</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1885&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_33" name="spawn_time_min_33" min="1" max="10080" value="120"> - <input type="number" id="spawn_time_max_33" name="spawn_time_max_33" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option33"></td>
+            <td><input type="time" id="death_time_33" name="death_time_33">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_33')">
+            <td id="next_spawn_time_33"></td>
+            <td id="remaining_time_33"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1147.gif" alt="Maya"></td>
+            <td><input type="text" id="boss_34" name="boss_34" value="Maya" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1147" class="input_id"></td>
+            <td><input type="text" id="map_34" name="map_34" value="anthell02" class="input_map"><br>Dungeon 📍 Ant Hell F2</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1147&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_34" name="spawn_time_min_34" min="1" max="10080" value="120"> - <input type="number" id="spawn_time_max_34" name="spawn_time_max_34" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option34"></td>
+            <td><input type="time" id="death_time_34" name="death_time_34">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_34')">
+            <td id="next_spawn_time_34"></td>
+            <td id="remaining_time_34"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1685.gif" alt="Vesper"></td>
+            <td><input type="text" id="boss_35" name="boss_35" value="Vesper" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1685" class="input_id"></td>
+            <td><input type="text" id="map_35" name="map_35" value="jupe_core" class="input_map"><br>Dungeon 📍 Juperos Core</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1685&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_35" name="spawn_time_min_35" min="1" max="10080" value="120"> - <input type="number" id="spawn_time_max_35" name="spawn_time_max_35" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option35"></td>
+            <td><input type="time" id="death_time_35" name="death_time_35">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_35')">
+            <td id="next_spawn_time_35"></td>
+            <td id="remaining_time_35"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1658.gif" alt="Egnigem Cenia"></td>
+            <td><input type="text" id="boss_36" name="boss_36" value="Egnigem Cenia" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1658" class="input_id"></td>
+            <td><input type="text" id="map_36" name="map_36" value="lhz_dun02" class="input_map"><br>Dungeon 📍 Bio Laboratory F2</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1658&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_36" name="spawn_time_min_36" min="1" max="10080" value="120"> - <input type="number" id="spawn_time_max_36" name="spawn_time_max_36" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option36"></td>
+            <td><input type="time" id="death_time_36" name="death_time_36">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_36')">
+            <td id="next_spawn_time_36"></td>
+            <td id="remaining_time_36"></td>
+        </tr>
+        <tr>
+            <td colspan="10" style="background-color: #444;">
+                <span style="font-size: 40px;">1 2 0     -     1 5 0     น า ที</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/2202.gif" alt="Kraken"></td>
+            <td><input type="text" id="boss_37" name="boss_37" value="Kraken" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="2202" class="input_id"></td>
+            <td><input type="text" id="map_37" name="map_37" value="iz_dun05" class="input_map"><br>Dungeon 📍 Undersea Tunnel F6</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=2202&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_37" name="spawn_time_min_37" min="1" max="10080" value="120"> - <input type="number" id="spawn_time_max_37" name="spawn_time_max_37" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option37"></td>
+            <td><input type="time" id="death_time_37" name="death_time_37">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_37')">
+            <td id="next_spawn_time_37"></td>
+            <td id="remaining_time_37"></td>
+        </tr>
+        <tr>
+            <td colspan="10" style="background-color: #444;">
+                <span style="font-size: 40px;">1 2 0     -     1 8 0     น า ที</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1734.gif" alt="Kiel D-01"></td>
+            <td><input type="text" id="boss_38" name="boss_38" value="Kiel D-01" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1734" class="input_id"></td>
+            <td><input type="text" id="map_38" name="map_38" value="kh_dun02" class="input_map"><br>Dungeon 📍 Robot Factory Level 2</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1734&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_38" name="spawn_time_min_38" min="1" max="10080" value="120"> - <input type="number" id="spawn_time_max_38" name="spawn_time_max_38" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option38"></td>
+            <td><input type="time" id="death_time_38" name="death_time_38">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_38')">
+            <td id="next_spawn_time_38"></td>
+            <td id="remaining_time_38"></td>
+        </tr>
+        <tr>
+            <td colspan="10" style="background-color: #444;">
+                <span style="font-size: 40px;">1 2 5     -     1 3 5     น า ที</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1623.gif" alt="RSX-0806"></td>
+            <td><input type="text" id="boss_39" name="boss_39" value="RSX-0806" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1623" class="input_id"></td>
+            <td><input type="text" id="map_39" name="map_39" value="ein_dun02" class="input_map"><br>Dungeon 📍 Einbech Mine Dungeon 2F</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1623&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_39" name="spawn_time_min_39" min="1" max="10080" value="125"> - <input type="number" id="spawn_time_max_39" name="spawn_time_max_39" min="1" max="10080" value="135"></td>
+            <td><input type="radio" name="radio-group" value="option39"></td>
+            <td><input type="time" id="death_time_39" name="death_time_39">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_39')">
+            <td id="next_spawn_time_39"></td>
+            <td id="remaining_time_39"></td>
+        </tr>
+        <tr>
+            <td colspan="10" style="background-color: #444;">
+                <span style="font-size: 40px;">1 3 3 น า ที</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1373.gif" alt="Lord of the Dead"></td>
+            <td><input type="text" id="boss_40" name="boss_40" value="Lord of the Dead" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1373" class="input_id"></td>
+            <td><input type="text" id="map_40" name="map_40" value="niflheim" class="input_map"><br>📍 Nifflheim, Realm of the Dead</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1373&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_40" name="spawn_time_min_40" min="1" max="10080" value="133"> - <input type="number" id="spawn_time_max_40" name="spawn_time_max_40" min="1" max="10080" value="133"></td>
+            <td><input type="radio" name="radio-group" value="option40"></td>
+            <td><input type="time" id="death_time_40" name="death_time_40">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_40')">
+            <td id="next_spawn_time_40"></td>
+            <td id="remaining_time_40"></td>
+        </tr>
+
+        <!--
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1917.gif" alt="XXXXX"></td>
+            <td><input type="text" id="boss_XY" name="boss_XY" value="XXXXX" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1917" class="input_id"></td>
+            <td><input type="text" id="map_XY" name="map_XY" value="ZZZ" class="input_map"><br>📍 ZZZZZZZZZZ</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1917&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_XY" name="spawn_time_min_XY" min="1" max="10080" value="120"> - <input type="number" id="spawn_time_max_XY" name="spawn_time_max_XY" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="optionXY"></td>
+            <td><input type="time" id="death_time_XY" name="death_time_XY">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_XY')">
+            <td id="next_spawn_time_XY"></td>
+            <td id="remaining_time_XY"></td>
+        </tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <tr>
+            <td colspan="10" style="background-color: #444;">
+                <span style="font-size: 20px;">1 0 0     -     1 3 0     น า ที<br>L a b o r a t o r y 3     ( โ อ ก า ส เ กิ ด ชั้ น ล ะ ตั ว )</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1647.gif" alt="Assassin Cross Eremes"></td>
+            <td><input type="text" id="boss_23" name="boss_23" value="Assassin Cross Eremes" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1647" class="input_id"></td>
+            <td><input type="text" id="map_23" name="map_23" value="lhz_dun03" class="input_map"><br>Dungeon 📍 Bio Laboratory F3</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1647&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_23" name="spawn_time_min_23" min="1" max="10080" value="100"> - <input type="number" id="spawn_time_max_23" name="spawn_time_max_23" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option23"></td>
+            <td><input type="time" id="death_time_23" name="death_time_23">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_23')">
+            <td id="next_spawn_time_23"></td>
+            <td id="remaining_time_23"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1649.gif" alt="High Priest Margaretha"></td>
+            <td><input type="text" id="boss_24" name="boss_24" value="High Priest Margaretha" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1649" class="input_id"></td>
+            <td><input type="text" id="map_24" name="map_24" value="lhz_dun03" class="input_map"><br>Dungeon 📍 Bio Laboratory F3</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1649&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_24" name="spawn_time_min_24" min="1" max="10080" value="100"> - <input type="number" id="spawn_time_max_24" name="spawn_time_max_24" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option24"></td>
+            <td><input type="time" id="death_time_24" name="death_time_24">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_24')">
+            <td id="next_spawn_time_24"></td>
+            <td id="remaining_time_24"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1651.gif" alt="High Wizard Kathryne"></td>
+            <td><input type="text" id="boss_25" name="boss_25" value="High Wizard Kathryne" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1651" class="input_id"></td>
+            <td><input type="text" id="map_25" name="map_25" value="lhz_dun03" class="input_map"><br>Dungeon 📍 Bio Laboratory F3</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1651&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_25" name="spawn_time_min_25" min="1" max="10080" value="100"> - <input type="number" id="spawn_time_max_25" name="spawn_time_max_25" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option25"></td>
+            <td><input type="time" id="death_time_25" name="death_time_25">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_25')">
+            <td id="next_spawn_time_25"></td>
+            <td id="remaining_time_25"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1646.gif" alt="Lord Knight Seyren"></td>
+            <td><input type="text" id="boss_26" name="boss_26" value="Lord Knight Seyren" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1646" class="input_id"></td>
+            <td><input type="text" id="map_26" name="map_26" value="lhz_dun03" class="input_map"><br>Dungeon 📍 Bio Laboratory F3</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1646&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_26" name="spawn_time_min_26" min="1" max="10080" value="100"> - <input type="number" id="spawn_time_max_26" name="spawn_time_max_26" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option26"></td>
+            <td><input type="time" id="death_time_26" name="death_time_26">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_26')">
+            <td id="next_spawn_time_26"></td>
+            <td id="remaining_time_26"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1650.gif" alt="Sniper Cecil"></td>
+            <td><input type="text" id="boss_27" name="boss_27" value="Sniper Cecil" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1650" class="input_id"></td>
+            <td><input type="text" id="map_27" name="map_27" value="lhz_dun03" class="input_map"><br>Dungeon 📍 Bio Laboratory F3</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1650&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_27" name="spawn_time_min_27" min="1" max="10080" value="100"> - <input type="number" id="spawn_time_max_27" name="spawn_time_max_27" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option27"></td>
+            <td><input type="time" id="death_time_27" name="death_time_27">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_27')">
+            <td id="next_spawn_time_27"></td>
+            <td id="remaining_time_27"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/1648.gif" alt="Whitesmith Howard"></td>
+            <td><input type="text" id="boss_28" name="boss_28" value="Whitesmith Howard" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="1648" class="input_id"></td>
+            <td><input type="text" id="map_28" name="map_28" value="lhz_dun03" class="input_map"><br>Dungeon 📍 Bio Laboratory F3</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=1648&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_28" name="spawn_time_min_28" min="1" max="10080" value="100"> - <input type="number" id="spawn_time_max_28" name="spawn_time_max_28" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option28"></td>
+            <td><input type="time" id="death_time_28" name="death_time_28">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_28')">
+            <td id="next_spawn_time_28"></td>
+            <td id="remaining_time_28"></td>
+        </tr>
+        <tr>
+            <td colspan="10" style="background-color: #444;">
+                <span style="font-size: 20px;">1 0 0     -     1 3 0     น า ที<br>L a b o r a t o r y 4     ( โ อ ก า ส เ กิ ด ชั้ น ล ะ ตั ว )</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/2238.gif" alt="Champion Chen"></td>
+            <td><input type="text" id="boss_29" name="boss_29" value="Champion Chen" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="2238" class="input_id"></td>
+            <td><input type="text" id="map_29" name="map_29" value="lhz_dun04" class="input_map"><br>Dungeon 📍 Bio Laboratory F4</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=2238&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_29" name="spawn_time_min_29" min="1" max="10080" value="100"> - <input type="number" id="spawn_time_max_29" name="spawn_time_max_29" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option29"></td>
+            <td><input type="time" id="death_time_29" name="death_time_29">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_29')">
+            <td id="next_spawn_time_29"></td>
+            <td id="remaining_time_29"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/2240.gif" alt="Clown Alphoccio"></td>
+            <td><input type="text" id="boss_30" name="boss_30" value="Clown Alphoccio" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="2240" class="input_id"></td>
+            <td><input type="text" id="map_30" name="map_30" value="lhz_dun04" class="input_map"><br>Dungeon 📍 Bio Laboratory F4</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=2240&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_30" name="spawn_time_min_30" min="1" max="10080" value="100"> - <input type="number" id="spawn_time_max_30" name="spawn_time_max_30" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option30"></td>
+            <td><input type="time" id="death_time_30" name="death_time_30">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_30')">
+            <td id="next_spawn_time_30"></td>
+            <td id="remaining_time_30"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/2236.gif" alt="Creator Flamel"></td>
+            <td><input type="text" id="boss_31" name="boss_31" value="Creator Flamel" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="2236" class="input_id"></td>
+            <td><input type="text" id="map_31" name="map_31" value="lhz_dun04" class="input_map"><br>Dungeon 📍 Bio Laboratory F4</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=2236&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_31" name="spawn_time_min_31" min="1" max="10080" value="100"> - <input type="number" id="spawn_time_max_31" name="spawn_time_max_31" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option31"></td>
+            <td><input type="time" id="death_time_31" name="death_time_31">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_31')">
+            <td id="next_spawn_time_31"></td>
+            <td id="remaining_time_31"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/2241.gif" alt="Gypsy Trentini"></td>
+            <td><input type="text" id="boss_37" name="boss_37" value="Gypsy Trentini" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="2241" class="input_id"></td>
+            <td><input type="text" id="map_37" name="map_37" value="lhz_dun04" class="input_map"><br>Dungeon 📍 Bio Laboratory F4</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=2241&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_37" name="spawn_time_min_37" min="1" max="10080" value="100"> - <input type="number" id="spawn_time_max_37" name="spawn_time_max_37" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option37"></td>
+            <td><input type="time" id="death_time_37" name="death_time_37">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_37')">
+            <td id="next_spawn_time_37"></td>
+            <td id="remaining_time_37"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/2235.gif" alt="Paladin Randel"></td>
+            <td><input type="text" id="boss_38" name="boss_38" value="Paladin Randel" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="2235" class="input_id"></td>
+            <td><input type="text" id="map_38" name="map_38" value="lhz_dun04" class="input_map"><br>Dungeon 📍 Bio Laboratory F4</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=2235&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_38" name="spawn_time_min_38" min="1" max="10080" value="100"> - <input type="number" id="spawn_time_max_38" name="spawn_time_max_38" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option38"></td>
+            <td><input type="time" id="death_time_38" name="death_time_38">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_38')">
+            <td id="next_spawn_time_38"></td>
+            <td id="remaining_time_38"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/2237.gif" alt="Professor Celia"></td>
+            <td><input type="text" id="boss_39" name="boss_39" value="Professor Celia" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="2237" class="input_id"></td>
+            <td><input type="text" id="map_39" name="map_39" value="lhz_dun04" class="input_map"><br>Dungeon 📍 Bio Laboratory F4</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=2237&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_39" name="spawn_time_min_39" min="1" max="10080" value="100"> - <input type="number" id="spawn_time_max_39" name="spawn_time_max_39" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option39"></td>
+            <td><input type="time" id="death_time_39" name="death_time_39">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_39')">
+            <td id="next_spawn_time_39"></td>
+            <td id="remaining_time_39"></td>
+        </tr>
+        <tr>
+            <td class="bg-color"><img src="https://file5s.ratemyserver.net/mobs/2239.gif" alt="Stalker Gertie"></td>
+            <td><input type="text" id="boss_40" name="boss_40" value="Stalker Gertie" class="input_bossname"></td>
+            <td>🆔: <input type="text" value="2239" class="input_id"></td>
+            <td><input type="text" id="map_40" name="map_40" value="lhz_dun04" class="input_map"><br>Dungeon 📍 Bio Laboratory F4</td>
+            <td><input type="button" onClick="window.open('https://ratemyserver.net/mob_db.php?mob_id=2239&small=1&back=5',null,'toolbar=no,directories=no,menubar=no,scrollbars=no,location=no,resizable =no,width=851,height=900,left=0,top=0');" value="Click"></input></td>
+            <td><input type="number" id="spawn_time_min_40" name="spawn_time_min_40" min="1" max="10080" value="100"> - <input type="number" id="spawn_time_max_40" name="spawn_time_max_40" min="1" max="10080" value="130"></td>
+            <td><input type="radio" name="radio-group" value="option40"></td>
+            <td><input type="time" id="death_time_40" name="death_time_40">
+                <input type="button" value="เวลาปัจจุบัน" onclick="setCurrentTime('death_time_40')">
+            <td id="next_spawn_time_40"></td>
+            <td id="remaining_time_40"></td>
+        </tr>
+
+        -->
+
+
+        <!-- Add more rows for additional bosses -->
+    </table>
+
+    <script>
+        let hasPlayedSound = false; // ตัวแปรเพื่อเก็บสถานะการเล่นเสียง
+
+        function calculateSpawnTimes() {
+            for (let i = 1; i <= 40; i++) {
+                const boss = document.getElementById(`boss_${i}`).value;
+                const spawnTimeMin = parseInt(document.getElementById(`spawn_time_min_${i}`).value);
+                const spawnTimeMax = parseInt(document.getElementById(`spawn_time_max_${i}`).value);
+                const deathTime = document.getElementById(`death_time_${i}`).value;
+                const currentTime = new Date();
+                const remainingTimeMinElement = document.getElementById(`remaining_time_${i}`);
+                const nextSpawnTimeElement = document.getElementById(`next_spawn_time_${i}`);
+                const soundElement = document.getElementById("bossSpawnSound"); // เข้าถึงอ็อบเจ็กต์เสียง
+
+                if (deathTime === "") {
+                    remainingTimeMinElement.style.color = 'white';
+                    remainingTimeMinElement.style.fontSize = '15px';
+                    remainingTimeMinElement.innerHTML = 'ยังไม่ได้ระบุเวลาตายของบอส';
+                    nextSpawnTimeElement.innerHTML = '⚠ ระบุเวลาตายของบอสก่อน';
+                } else {
+                    const deathTimeParts = deathTime.split(":");
+                    const deathTimeDate = new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate(), parseInt(deathTimeParts[0]), parseInt(deathTimeParts[1]));
+                    const nextSpawnTimeMin = new Date(deathTimeDate.getTime() + spawnTimeMin * 60 * 1000);
+                    const nextSpawnTimeMax = new Date(deathTimeDate.getTime() + spawnTimeMax * 60 * 1000);
+                    const remainingTimeMin = nextSpawnTimeMin - currentTime;
+                    const remainingTimeMax = nextSpawnTimeMax - currentTime;
+                    const hoursMin = Math.floor(remainingTimeMin / (60 * 60 * 1000));
+                    const minutesMin = Math.floor((remainingTimeMin % (60 * 60 * 1000)) / (60 * 1000));
+                    const hoursMax = Math.floor(remainingTimeMax / (60 * 60 * 1000));
+                    const minutesMax = Math.floor((remainingTimeMax % (60 * 60 * 1000)) / (60 * 1000));
+
+                    if (hoursMin <= 0 && minutesMin <= 0 && hoursMax <= 0 && minutesMax <= 0) {
+                        remainingTimeMinElement.style.color = 'red';
+                        remainingTimeMinElement.style.fontSize = '20px';
+                        remainingTimeMinElement.innerHTML = '⚠ Boss เกิดแล้ว';
+
+                        // เล่นเสียงเพียงครั้งเดียว
+                        if (!hasPlayedSound) {
+                            soundElement.play();
+                            hasPlayedSound = true; // ตั้งค่าสถานะว่าเสียงได้เล่นแล้ว
+                        }
+                    } else {
+                        hasPlayedSound = false; // รีเซ็ตสถานะเมื่อบอสยังไม่เกิด
+                        if (hoursMin <= 0 && minutesMin <= 0) {
+                            remainingTimeMinElement.style.color = 'orange';
+                            remainingTimeMinElement.style.fontSize = '20px';
+                            remainingTimeMinElement.innerHTML = `⏳ อีกไม่เกิน ${minutesMax} นาที`;
+                        } else {
+                            remainingTimeMinElement.style.color = 'white';
+                            remainingTimeMinElement.style.fontSize = '15px';
+                            remainingTimeMinElement.innerHTML = `⌛ อีก ${hoursMin} ชั่วโมง ${minutesMin} นาที - ⌛ อีก ${hoursMax} ชั่วโมง ${minutesMax} นาที`;
+                        }
+                        
+                        nextSpawnTimeElement.innerHTML = `${nextSpawnTimeMin.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} - ${nextSpawnTimeMax.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`;
+                    }
+                }
+            }
+        }
+
+        // Call the calculateSpawnTimes function every 1 second to update the Next Spawn Time column
+        setInterval(calculateSpawnTimes, 1000);
+
+        // สำหรับปุ่ม เวลาปัจจุบัน
+        function setCurrentTime(id) {
+        const currentTime = new Date();
+        const hours = currentTime.getHours().toString().padStart(2, '0');
+        const minutes = currentTime.getMinutes().toString().padStart(2, '0');
+        document.getElementById(id).value = `${hours}:${minutes}`;
+        }
+
+        console.log(`Next Spawn Time Min: ${nextSpawnTimeMin}`);
+        console.log(`Next Spawn Time Max: ${nextSpawnTimeMax}`);
+
+    </script>
+</body>
+</html>
